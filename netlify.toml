@@ -5,9 +5,10 @@ functions = "netlify/functions"
 
 [functions]
 node_bundler = "esbuild"
-included_files = ["views/**", "public/**"]
+external_node_modules = ["ejs"]
+included_files = ["src/views/**", "public/**"]
 
 [[redirects]]
 from = "/*"
-to = "/.netlify/functions/render/:splat"
+to = "/.netlify/functions/render"
 status = 200
