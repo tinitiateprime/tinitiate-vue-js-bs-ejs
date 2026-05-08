@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const ejs = require('ejs');
 const path = require('path');
 const apiRoutes = require('./routes/apiRoutes');
 const pageRoutes = require('./routes/pageRoutes');
@@ -10,6 +11,7 @@ function createApp(options = {}) {
   const app = express();
 
   app.set('views', path.join(rootDir, 'views'));
+  app.engine('ejs', ejs.__express);
   app.set('view engine', 'ejs');
   app.disable('x-powered-by');
 
@@ -41,7 +43,6 @@ function createApp(options = {}) {
 module.exports = {
   createApp
 };
-
 
 
 
