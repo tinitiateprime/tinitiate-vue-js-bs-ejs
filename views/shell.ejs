@@ -1,0 +1,53 @@
+<%
+  const brand = site.navbar?.brand || site.footer?.brand || 'Template Engine';
+  const meta = {
+    brand,
+    tagline: site.navbar?.tagline || site.header?.subtitle || ''
+  };
+  const stackLabel = 'Node.js · Express.js · EJS · Vue.js';
+  const clientPayload = {
+    site,
+    componentCatalog,
+    pageTree,
+    dashboard,
+    initialSections,
+    currentPath,
+    source,
+    fetchedAt
+  };
+%>
+<!doctype html>
+<html lang="en" data-theme="<%= activeTheme %>">
+  <head>
+    <%- include('partials/head', { pageTitle, meta, cssVariables }) %>
+  </head>
+  <body class="builder-mode">
+    <div class="site-shell">
+      <%- include('partials/header', { header: site.header, meta, stackLabel }) %>
+      <%- include('partials/navbar', { navbar: site.navbar, currentPath }) %>
+
+      <main class="site-main" id="main-content">
+        <%- include('partials/builder', { componentCatalog }) %>
+
+        <div class="container server-sections">
+          <% if (notFound) { %>
+            <section class="content-section notice-section">
+              <p class="eyebrow"><%= currentPath %></p>
+              <h2><%= pageTitle %></h2>
+              <p>The requested route is not defined in the GitHub content yet, so the dashboard component is shown as a runtime fallback.</p>
+            </section>
+          <% } %>
+          <%- include('components/section-renderer', { sections: initialSections, site, dashboard }) %>
+        </div>
+      </main>
+
+      <%- include('partials/footer', { footer: site.footer }) %>
+    </div>
+
+    <script>
+      window.SiteTemplatePayload = <%- jsonForScript(clientPayload) %>;
+    </script>
+    <script defer src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script defer src="/js/app.js"></script>
+  </body>
+</html>

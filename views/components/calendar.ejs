@@ -1,0 +1,25 @@
+<% const data = calendar || {}; %>
+<section class="content-section" data-section="calendar">
+  <% if (data.label) { %>
+    <p class="eyebrow"><%= data.label %></p>
+  <% } %>
+  <div class="section-heading">
+    <h2><%= data.title || '' %></h2>
+    <% if (data.subtitle) { %>
+      <p><%= data.subtitle %></p>
+    <% } %>
+  </div>
+
+  <% if (Array.isArray(data.events) && data.events.length) { %>
+    <div class="timeline">
+      <% data.events.forEach(function(event) { %>
+        <article class="timeline-item">
+          <time datetime="<%= event.date %>"><%= event.date %> · <%= event.time %> <%= event.timezone %></time>
+          <h3><%= event.title %></h3>
+          <p><%= event.description %></p>
+          <span><%= event.location %></span>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>

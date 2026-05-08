@@ -1,0 +1,28 @@
+<% const data = about || {}; %>
+<section class="content-section about-section" data-section="about">
+  <% if (data.label) { %>
+    <p class="eyebrow"><%= data.label %></p>
+  <% } %>
+  <div class="section-heading">
+    <h2><%= data.title || '' %></h2>
+    <% if (data.description) { %>
+      <p><%= data.description %></p>
+    <% } %>
+  </div>
+
+  <% if (data.mission) { %>
+    <p class="callout"><%= data.mission %></p>
+  <% } %>
+
+  <% if (Array.isArray(data.values) && data.values.length) { %>
+    <div class="card-grid three">
+      <% data.values.forEach(function(value) { %>
+        <article class="feature-card">
+          <span class="icon-token"><%= value.icon || '+' %></span>
+          <h3><%= value.title %></h3>
+          <p><%= value.description %></p>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>

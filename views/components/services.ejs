@@ -1,0 +1,31 @@
+<% const data = services || {}; %>
+<section class="content-section" data-section="services">
+  <% if (data.label) { %>
+    <p class="eyebrow"><%= data.label %></p>
+  <% } %>
+  <div class="section-heading">
+    <h2><%= data.title || '' %></h2>
+    <% if (data.subtitle) { %>
+      <p><%= data.subtitle %></p>
+    <% } %>
+  </div>
+
+  <% if (Array.isArray(data.items) && data.items.length) { %>
+    <div class="card-grid three">
+      <% data.items.forEach(function(item) { %>
+        <article class="feature-card">
+          <span class="icon-token"><%= item.icon || item.id || '+' %></span>
+          <h3><%= item.title %></h3>
+          <p><%= item.description %></p>
+          <% if (Array.isArray(item.tags) && item.tags.length) { %>
+            <div class="tag-row">
+              <% item.tags.forEach(function(tag) { %>
+                <span><%= tag %></span>
+              <% }) %>
+            </div>
+          <% } %>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>

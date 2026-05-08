@@ -1,0 +1,23 @@
+<% (sections || []).forEach(function(sectionKey) { %>
+  <% if (sectionKey === 'about') { %>
+    <%- include('about', { about: site.about }) %>
+  <% } else if (sectionKey === 'services') { %>
+    <%- include('services', { services: site.services }) %>
+  <% } else if (sectionKey === 'catalog') { %>
+    <%- include('catalog', { catalog: site.catalog }) %>
+  <% } else if (sectionKey === 'comparison') { %>
+    <%- include('comparison', { comparison: site.comparison }) %>
+  <% } else if (sectionKey === 'calendar') { %>
+    <%- include('calendar', { calendar: site.calendar }) %>
+  <% } else if (sectionKey === 'dashboard') { %>
+    <%- include('dashboard', { dashboard }) %>
+  <% } else if (sectionKey === 'contact') { %>
+    <%- include('contact', { contact: site.contact }) %>
+  <% } else if (sectionKey === 'login') { %>
+    <%- include('login', { navbar: site.navbar }) %>
+  <% } else if (sectionKey === 'signup') { %>
+    <%- include('signup', { navbar: site.navbar }) %>
+  <% } else if (sectionKey === 'cart') { %>
+    <%- include('cart', { catalog: site.catalog }) %>
+  <% } %>
+<% }) %>

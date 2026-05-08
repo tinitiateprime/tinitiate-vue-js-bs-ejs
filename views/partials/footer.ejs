@@ -1,0 +1,27 @@
+<% const foot = footer || {}; %>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <strong class="footer-brand"><%= foot.brand || '' %></strong>
+      <% if (foot.tagline) { %>
+        <p><%= foot.tagline %></p>
+      <% } %>
+      <% if (foot.copyright) { %>
+        <p class="muted-text"><%= foot.copyright %></p>
+      <% } %>
+    </div>
+
+    <% if (Array.isArray(foot.links) && foot.links.length) { %>
+      <div class="footer-links">
+        <% foot.links.forEach(function(group) { %>
+          <div>
+            <h2><%= group.group %></h2>
+            <% (group.items || []).forEach(function(item) { %>
+              <a href="<%= item.path %>"><%= item.label %></a>
+            <% }) %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</footer>

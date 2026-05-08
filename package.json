@@ -1,0 +1,22 @@
+{
+  "name": "github-ejs-vue-template-engine",
+  "version": "1.0.0",
+  "description": "Modular EJS template engine with Express, Vue-managed UI state, and runtime GitHub JSON content.",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "build": "node scripts/netlify-build.js",
+    "netlify:build": "node scripts/netlify-build.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "serverless-http": "^3.2.0"
+  }
+}
+

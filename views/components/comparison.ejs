@@ -1,0 +1,37 @@
+<% const data = comparison || {}; %>
+<section class="content-section" data-section="comparison">
+  <% if (data.label) { %>
+    <p class="eyebrow"><%= data.label %></p>
+  <% } %>
+  <div class="section-heading">
+    <h2><%= data.title || '' %></h2>
+    <% if (data.subtitle) { %>
+      <p><%= data.subtitle %></p>
+    <% } %>
+  </div>
+
+  <% if (Array.isArray(data.plans) && Array.isArray(data.features)) { %>
+    <div class="table-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <% data.plans.forEach(function(plan) { %>
+              <th class="<%= data.recommended === plan ? 'recommended' : '' %>"><%= plan %></th>
+            <% }) %>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.features.forEach(function(feature) { %>
+            <tr>
+              <th><%= feature.name %></th>
+              <% (feature.values || []).forEach(function(value) { %>
+                <td><%= value %></td>
+              <% }) %>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>

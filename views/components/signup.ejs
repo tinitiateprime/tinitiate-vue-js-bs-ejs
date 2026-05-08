@@ -1,0 +1,22 @@
+<section class="content-section auth-section" data-section="signup">
+  <p class="eyebrow"><%= navbar?.brand || 'Account' %></p>
+  <div class="section-heading">
+    <h2>Signup</h2>
+  </div>
+  <form class="auth-form js-api-form" data-api-form="signup">
+    <label>
+      <span>Name</span>
+      <input type="text" name="name" autocomplete="name" required>
+    </label>
+    <label>
+      <span>Email</span>
+      <input type="email" name="email" autocomplete="email" required>
+    </label>
+    <label>
+      <span>Password</span>
+      <input type="password" name="password" autocomplete="new-password" required>
+    </label>
+    <button class="button primary" type="submit">Signup</button>
+    <p class="form-status js-form-status" aria-live="polite"></p>
+  </form>
+</section>

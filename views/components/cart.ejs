@@ -1,0 +1,27 @@
+<% const data = catalog || {}; %>
+<section class="content-section" data-section="cart">
+  <p class="eyebrow"><%= data.label || '' %></p>
+  <div class="section-heading">
+    <h2><%= data.title || 'Cart' %></h2>
+    <% if (data.subtitle) { %>
+      <p><%= data.subtitle %></p>
+    <% } %>
+  </div>
+
+  <% if (Array.isArray(data.items) && data.items.length) { %>
+    <div class="cart-product-list">
+      <% data.items.forEach(function(item) { %>
+        <article class="cart-product">
+          <div>
+            <strong><%= item.name %></strong>
+            <span><%= item.currency %><%= item.price %> <%= item.billing %></span>
+          </div>
+          <button class="button primary js-add-to-cart" type="button" data-cart-action="add" data-product-id="<%= item.id %>">
+            <span class="button-symbol">+</span>
+            <span>Add</span>
+          </button>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>

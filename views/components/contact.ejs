@@ -1,0 +1,56 @@
+<% const data = contact || {}; %>
+<section class="content-section contact-section" data-section="contact">
+  <% if (data.label) { %>
+    <p class="eyebrow"><%= data.label %></p>
+  <% } %>
+  <div class="section-heading">
+    <h2><%= data.title || '' %></h2>
+    <% if (data.subtitle) { %>
+      <p><%= data.subtitle %></p>
+    <% } %>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-details">
+      <% if (data.email) { %>
+        <a href="mailto:<%= data.email %>"><%= data.email %></a>
+      <% } %>
+      <% if (data.phone) { %>
+        <a href="tel:<%= data.phone %>"><%= data.phone %></a>
+      <% } %>
+      <% if (data.address) { %>
+        <p><%= data.address %></p>
+      <% } %>
+      <% if (Array.isArray(data.socials) && data.socials.length) { %>
+        <div class="tag-row">
+          <% data.socials.forEach(function(social) { %>
+            <a href="<%= social.url %>"><%= social.platform %></a>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <% if (data.form && Array.isArray(data.form.fields)) { %>
+      <form class="form-grid js-api-form" data-api-form="contact">
+        <% data.form.fields.forEach(function(field) { %>
+          <label class="<%= field.type === 'textarea' ? 'full-span' : '' %>">
+            <span><%= field.label %></span>
+            <% if (field.type === 'textarea') { %>
+              <textarea name="<%= field.name %>" <%= field.required ? 'required' : '' %>></textarea>
+            <% } else if (field.type === 'select') { %>
+              <select name="<%= field.name %>" <%= field.required ? 'required' : '' %>>
+                <% (field.options || []).forEach(function(option) { %>
+                  <option value="<%= option %>"><%= option %></option>
+                <% }) %>
+              </select>
+            <% } else { %>
+              <input type="<%= field.type %>" name="<%= field.name %>" <%= field.required ? 'required' : '' %>>
+            <% } %>
+          </label>
+        <% }) %>
+        <button class="button primary" type="submit"><%= data.form.submit %></button>
+        <p class="form-status js-form-status" aria-live="polite"></p>
+      </form>
+    <% } %>
+  </div>
+</section>

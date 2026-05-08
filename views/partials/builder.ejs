@@ -1,0 +1,286 @@
+<section id="builder-app" class="builder-band" v-cloak>
+  <div class="container builder-panel">
+    <section class="template-screen skeleton-mode" v-if="!templateSelected">
+      <div class="builder-topline centered">
+        <div>
+          <p class="eyebrow skeleton-label">Template engine</p>
+          <h2>Select one template engine</h2>
+        </div>
+      </div>
+
+      <div class="skeleton-template-grid">
+        <button
+          class="skeleton-template"
+          :class="layout.className"
+          type="button"
+          v-for="layout in layoutTemplates"
+          :key="layout.key"
+          @click="selectTemplate(layout.key)"
+        >
+          <span class="wire wire-top"></span>
+          <span class="wire wire-line wide"></span>
+          <span class="wire wire-line"></span>
+          <span class="wire-grid">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <strong>{{ layout.label }}</strong>
+          <small>{{ layout.description }}</small>
+        </button>
+      </div>
+    </section>
+
+    <section class="composition-builder skeleton-mode" :class="selectedLayoutClass" v-else-if="!previewMode">
+      <div class="builder-actionbar">
+        <div class="template-switcher">
+          <button class="button ghost" type="button" @click="toggleTemplateMenu" aria-haspopup="true" :aria-expanded="templateMenuOpen">
+            Switch Template
+          </button>
+          <div class="template-menu" v-if="templateMenuOpen">
+            <button
+              type="button"
+              v-for="layout in layoutTemplates"
+              :key="layout.key"
+              :class="{ 'is-active': layout.key === layoutTemplate }"
+              @click="selectTemplate(layout.key)"
+            >
+              <span>{{ layout.label }}</span>
+              <small>{{ layout.description }}</small>
+            </button>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow skeleton-label">Selected skeleton</p>
+          <strong>{{ selectedTemplateLabel }}</strong>
+        </div>
+        <button class="button dark" type="button" @click="startPreview" :disabled="selectedCount === 0">
+          Preview
+        </button>
+      </div>
+
+      <div class="composition-grid" :class="{ 'has-panel': dataPanelOpen }">
+        <main class="home-canvas" :class="selectedLayoutClass" aria-label="Home canvas">
+          <div class="home-page-skeleton">
+            <section class="skeleton-fixed skeleton-header-row">
+              <span>Header</span>
+              <strong>{{ homeTitle }}</strong>
+            </section>
+
+            <section class="skeleton-fixed skeleton-navbar-row">
+              <span>Navbar</span>
+              <div class="nav-wire">
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <button class="skeleton-nav-dropdown" type="button" v-if="subpages.length">
+                  Subpages ({{ subpages.length }})
+                </button>
+              </div>
+            </section>
+
+            <section class="skeleton-content-zone">
+              <div class="content-zone-head">
+                <div>
+                  <span class="home-pill">{{ activeWorkspaceKind }}</span>
+                  <strong>{{ activeWorkspacePage.id === rootPage.id ? 'Selectable content' : activeWorkspacePage.title }}</strong>
+                </div>
+                <div class="content-zone-actions">
+                  <button class="button ghost compact" type="button" v-if="activeWorkspacePage.id !== rootPage.id" @click="selectHomeWorkspace">
+                    Home
+                  </button>
+                  <button class="plus-anchor" type="button" @click="openDataPanel(activeWorkspacePage.id)" :aria-label="'Add data card to ' + activeWorkspacePage.title">
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <div class="selected-tree" v-if="activeWorkspacePage.children.length">
+                <page-node
+                  v-for="child in activeWorkspacePage.children"
+                  :key="child.id"
+                  :page="child"
+                  :depth="0"
+                  :active-id="activePageId"
+                  @select-page="selectPage"
+                  @open-panel="openDataPanel"
+                  @remove-page="removePage"
+                ></page-node>
+              </div>
+
+              <p class="empty-hint" v-else>Click + to add About, Products, Services, or other data.json cards.</p>
+            </section>
+
+            <section class="subpage-zone" aria-label="Home subpages">
+              <div class="subpage-zone-head">
+                <div>
+                  <span>Subpages</span>
+                  <strong>Home subpages</strong>
+                </div>
+              </div>
+
+              <form class="subpage-form" @submit.prevent="addSubpage">
+                <input v-model.trim="newSubpageName" type="text" placeholder="Custom subpage name" aria-label="Custom subpage name">
+                <button class="button dark compact" type="submit">Add</button>
+              </form>
+
+              <div class="subpage-list" v-if="subpages.length">
+                <article
+                  class="subpage-card"
+                  v-for="subpage in subpages"
+                  :key="subpage.id"
+                  :class="{ 'is-active': activeWorkspacePage.id === subpage.id }"
+                >
+                  <button class="subpage-select" type="button" @click="editSubpage(subpage.id)">
+                    <span>{{ subpage.title }}</span>
+                    <small>{{ subpage.children?.length || 0 }} selected</small>
+                  </button>
+                  <button class="subpage-card-action" type="button" @click.stop="openDataPanel(subpage.id)" :aria-label="'Configure ' + subpage.title">+</button>
+                  <button class="subpage-card-action" type="button" @click.stop="removeSubpage(subpage.id)" :aria-label="'Remove ' + subpage.title">×</button>
+                </article>
+              </div>
+
+              <p class="empty-hint" v-else>No subpages yet.</p>
+            </section>
+
+            <section class="skeleton-fixed skeleton-footer-row">
+              <span>Footer</span>
+              <strong>{{ site.footer?.brand || site.navbar?.brand }}</strong>
+            </section>
+          </div>
+        </main>
+
+        <aside class="data-panel" v-if="dataPanelOpen">
+          <div class="builder-topline compact">
+            <div>
+              <p class="eyebrow skeleton-label">data.json cards</p>
+              <h3>{{ dataPanelParent?.title }}</h3>
+            </div>
+            <button class="button ghost icon-only" type="button" @click="closeDataPanel" aria-label="Close data cards">×</button>
+          </div>
+
+          <div class="data-card-list">
+            <button
+              class="data-card"
+              type="button"
+              v-for="component in dataCards"
+              :key="component.key"
+              :class="{ 'is-selected': parentHasTemplate(component.key) }"
+              @click="addDataCard(component.key)"
+            >
+              <span>{{ component.label }}</span>
+              <small>{{ templateSummary(component.key) }}</small>
+            </button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="preview-builder" :class="selectedLayoutClass" v-else>
+      <div class="preview-toolbar">
+        <div>
+          <p class="eyebrow">Preview</p>
+          <h2>{{ activePreviewTitle }}</h2>
+        </div>
+        <div class="tool-row">
+          <div class="template-switcher">
+            <button class="button secondary" type="button" @click="toggleTemplateMenu" aria-haspopup="true" :aria-expanded="templateMenuOpen">
+              Switch Template
+            </button>
+            <div class="template-menu" v-if="templateMenuOpen">
+              <button
+                type="button"
+                v-for="layout in layoutTemplates"
+                :key="layout.key"
+                :class="{ 'is-active': layout.key === layoutTemplate }"
+                @click="selectTemplate(layout.key)"
+              >
+                <span>{{ layout.label }}</span>
+                <small>{{ layout.description }}</small>
+              </button>
+            </div>
+          </div>
+          <button class="button secondary" type="button" @click="backToEdit">
+            Edit
+          </button>
+          <button class="button secondary icon-only" type="button" @click="toggleTheme" :aria-label="themeLabel">
+            {{ theme === 'dark' ? 'Light' : 'Dark' }}
+          </button>
+        </div>
+      </div>
+
+      <nav class="preview-site-nav" aria-label="Preview navigation">
+        <div class="preview-nav-brand">
+          <button type="button" @click="selectPreviewPage(rootPage.id)">
+            <strong>{{ site.navbar?.brand || homeTitle }}</strong>
+            <span v-if="site.navbar?.tagline">{{ site.navbar.tagline }}</span>
+          </button>
+        </div>
+
+        <div class="preview-nav-links">
+          <button type="button" :class="{ 'is-active': activePreviewPage.id === rootPage.id }" @click="selectPreviewPage(rootPage.id)">
+            Home
+          </button>
+          <div class="preview-subpage-dropdown" v-if="subpages.length">
+            <button type="button" @click="togglePreviewSubpageMenu" aria-haspopup="true" :aria-expanded="previewSubpageMenuOpen">
+              <span>Subpages</span>
+              <small>{{ subpages.length }}</small>
+            </button>
+            <div class="preview-subpage-menu" v-if="previewSubpageMenuOpen">
+              <button
+                type="button"
+                v-for="subpage in subpages"
+                :key="subpage.id"
+                :class="{ 'is-active': activePreviewPage.id === subpage.id }"
+                @click="selectPreviewPage(subpage.id)"
+              >
+                <span>{{ subpage.title }}</span>
+                <small>{{ subpage.children?.length || 0 }} sections</small>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="preview-stack" :class="selectedLayoutClass">
+        <page-preview
+          v-for="child in activePreviewSections"
+          :key="child.id"
+          :page="child"
+          :site="site"
+          :dashboard="dashboard"
+          @add-to-cart="addToCart"
+        ></page-preview>
+        <p class="preview-empty-state" v-if="!activePreviewSections.length">No content selected for this page yet.</p>
+      </div>
+    </section>
+
+    <aside class="cart-drawer" v-if="cartOpen" aria-label="Shopping cart">
+      <div class="cart-drawer-inner">
+        <div class="cart-head">
+          <strong>Cart</strong>
+          <button class="button secondary icon-only" type="button" @click="cartOpen = false" aria-label="Close cart">×</button>
+        </div>
+        <div class="cart-items" v-if="cartItems.length">
+          <article class="cart-line" v-for="item in cartItems" :key="item.id">
+            <div>
+              <strong>{{ item.name }}</strong>
+              <span>{{ item.currency }}{{ item.price }} × {{ item.quantity }}</span>
+            </div>
+            <div class="quantity-tools">
+              <button type="button" @click="decrementCart(item.id)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button type="button" @click="incrementCart(item.id)">+</button>
+            </div>
+          </article>
+        </div>
+        <p class="muted-text" v-else>No items selected.</p>
+        <div class="cart-total">
+          <span>Total</span>
+          <strong>{{ cartCurrency }}{{ cartTotal }}</strong>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>

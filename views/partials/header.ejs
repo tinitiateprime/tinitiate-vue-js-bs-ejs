@@ -1,0 +1,34 @@
+<% const hero = header || {}; %>
+<header class="site-header">
+  <div class="container header-grid">
+    <div class="header-copy">
+      <% if (stackLabel || hero.badge) { %>
+        <p class="eyebrow"><%= stackLabel || hero.badge %></p>
+      <% } %>
+      <h1><%= hero.title || meta.brand %></h1>
+      <% if (hero.subtitle) { %>
+        <p class="lead"><%= hero.subtitle %></p>
+      <% } %>
+      <% if (Array.isArray(hero.buttons) && hero.buttons.length) { %>
+        <div class="action-row">
+          <% hero.buttons.forEach(function(button) { %>
+            <a class="button <%= button.variant === 'outline' ? 'secondary' : 'primary' %>" href="<%= button.path || '#' %>">
+              <%= button.label %>
+            </a>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <% if (Array.isArray(hero.stats) && hero.stats.length) { %>
+      <div class="stat-grid" aria-label="Header stats">
+        <% hero.stats.forEach(function(stat) { %>
+          <article class="stat-card">
+            <strong><%= stat.value %></strong>
+            <span><%= stat.label %></span>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</header>

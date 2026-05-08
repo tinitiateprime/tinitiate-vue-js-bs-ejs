@@ -1,0 +1,33 @@
+<% const data = dashboard || {}; %>
+<section class="content-section" data-section="dashboard">
+  <p class="eyebrow">Runtime dashboard</p>
+  <div class="section-heading">
+    <h2>GitHub content overview</h2>
+    <p>Counts and recent entries are derived from the fetched JSON payload.</p>
+  </div>
+
+  <% if (Array.isArray(data.metrics) && data.metrics.length) { %>
+    <div class="metric-grid">
+      <% data.metrics.forEach(function(metric) { %>
+        <article class="metric-card">
+          <strong><%= metric.value %></strong>
+          <span><%= metric.key %></span>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <% if (Array.isArray(data.recent) && data.recent.length) { %>
+    <div class="activity-list">
+      <% data.recent.forEach(function(item) { %>
+        <article>
+          <span><%= item.label %></span>
+          <strong><%= item.title %></strong>
+          <% if (item.detail) { %>
+            <em><%= item.detail %></em>
+          <% } %>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
